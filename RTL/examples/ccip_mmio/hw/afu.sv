@@ -54,6 +54,15 @@ module afu
    output t_if_ccip_Tx tx
    );
 
+   // Instantiation of the fifo
+   fifo DUT(.clk(clk), .rst_n(rst), .en(rx.c0.mmioWrValid),
+	        .d(user_reg), .q(fifo_out));
+   
+   logic [63:0]	fifo_out;
+   logic [63:0] user_write_reg;
+
+   assign user_write_reg = (rx.c0.mmioRdValid) ? (fifo_out) : (user_write_reg);
+
    // The AFU must respond with its AFU ID in response to MMIO reads of the CCI-P device feature 
    // header (DFH).  The AFU ID is a unique ID for a given program. Here we generated one with 
    // the "uuidgen" program and stored it in the AFU's JSON file. ASE and synthesis setup scripts
@@ -161,7 +170,7 @@ module afu
 		    // =============================================================   
 		    
                     // Provide the 64-bit data from the user register mapped to h0020.
-                    16'h0020: tx.c2.data <= user_reg;
+                    16'h0020: tx.c2.data <= user_write_reg;
 
 		    // If the processor requests an address that is unused, return 0.
                     default:  tx.c2.data <= 64'h0;

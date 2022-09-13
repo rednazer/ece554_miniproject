@@ -13,5 +13,27 @@ module fifo
   input [BITS-1:0] d,
   output [BITS-1:0] q
   );
-  // your RTL code here
+	// Create the buffer and the head pointer
+	reg [BITS-1:0] buffer [0:DEPTH-1];
+	reg [$clog2(DEPTH)-1:0] head;
+
+	// assign output as current head
+	assign q = buffer[head];
+
+	always @(posedge clk) begin
+		if(en) begin // when enabled, move the buffer and increment the head
+			buffer[head] = d;
+			head = head + 1'b1;
+		end
+	end
+	
+	always @(negedge rst_n) begin
+		if(~rst_n) begin // reset on rst_n
+			head <= 0;
+			for(int index = 0; index < DEPTH; index=index+1'b1) begin
+				buffer[index] <= 0;
+			end
+		end
+	end
+	
 endmodule // fifo
