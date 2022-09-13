@@ -22,9 +22,9 @@ module fifo
 
 	always @(posedge clk, negedge rst_n) begin
 		if(~rst_n) begin
-			head <= 0;
+			head <= ($clog2(DEPTH)-1)'b0;
 			for(int index = 0; index < DEPTH; index=index+1'b1) begin
-				buffer[index] <= 0;
+				buffer[index] <= BITS'b0;
 			end
 		end else if(en) begin // when enabled, move the buffer and increment the head
 			buffer[head] = d;
