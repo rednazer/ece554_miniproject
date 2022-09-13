@@ -20,17 +20,15 @@ module fifo
 	// assign output as current head
 	assign q = buffer[head];
 
-	always @(posedge clk) begin
-		if(en) begin // when enabled, move the buffer and increment the head
+	always @(posedge clk, negedge rst_n) begin
+		if(~rst_n) begin
+			head <= 0;
+			for(int index = 0; index < DEPTH; index=index+1'b1) begin
+				buffer[index] <= 0;
+			end
+		end else if(en) begin // when enabled, move the buffer and increment the head
 			buffer[head] = d;
 			head = head + 1'b1;
-		end
-	end
-	
-	always @(negedge rst_n) begin
-		head <= 0;
-		for(int index = 0; index < DEPTH; index=index+1'b1) begin
-			buffer[index] <= 0;
 		end
 	end
 	
