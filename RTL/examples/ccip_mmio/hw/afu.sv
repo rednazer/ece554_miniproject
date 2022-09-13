@@ -55,7 +55,7 @@ module afu
    );
 
    // Instantiation of the fifo
-   fifo DUT(.clk(clk), .rst_n(rst), .en(rx.c0.mmioWrValid),
+   fifo DUT(.clk(clk), .rst_n(~rst), .en(rx.c0.mmioWrValid),
 	        .d(user_reg), .q(fifo_out));
    
    logic [63:0]	fifo_out;
