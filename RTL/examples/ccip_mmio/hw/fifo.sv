@@ -28,11 +28,9 @@ module fifo
 	end
 	
 	always @(negedge rst_n) begin
-		if(~rst_n) begin // reset on rst_n
-			head <= 0;
-			for(int index = 0; index < DEPTH; index=index+1'b1) begin
-				buffer[index] <= 0;
-			end
+		head <= 0;
+		for(int index = 0; index < DEPTH; index=index+1'b1) begin
+			buffer[index] <= 0;
 		end
 	end
 	
