@@ -59,9 +59,6 @@ module afu
 	        .d(user_reg), .q(fifo_out));
    
    logic [63:0]	fifo_out;
-   logic [63:0] user_write_reg;
-
-   assign user_write_reg = (rx.c0.mmioRdValid) ? (fifo_out) : (user_write_reg);
 
    // The AFU must respond with its AFU ID in response to MMIO reads of the CCI-P device feature 
    // header (DFH).  The AFU ID is a unique ID for a given program. Here we generated one with 
@@ -170,7 +167,7 @@ module afu
 		    // =============================================================   
 		    
                     // Provide the 64-bit data from the user register mapped to h0020.
-                    16'h0020: tx.c2.data <= user_write_reg;
+                    16'h0020: tx.c2.data <= fifo_out;
 
 		    // If the processor requests an address that is unused, return 0.
                     default:  tx.c2.data <= 64'h0;
